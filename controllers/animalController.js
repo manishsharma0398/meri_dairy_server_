@@ -1,19 +1,20 @@
-exports.getAllAnimals = (req, res) => {
+module.exports.getAllAnimals = (req, res) => {
   res.json({ message: "Home page of animals" });
 };
 
-exports.getAnimalById = (req, res) => {
-  res.json({ message: "get animal by id" });
+module.exports.getAnimalById = (req, res) => {
+  const animalId = req.params.aid;
+  res.json({ message: `get animal by id ${animalId}` });
 };
 
-exports.createNewAnimal = (req, res) => {
+module.exports.createNewAnimal = (req, res) => {
   res.json({ message: "add new animal" });
 };
 
-exports.updateAnimal = (req, res) => {
+module.exports.updateAnimal = (req, res) => {
   res.json({ message: "update animal" });
 };
 
-exports.deleteAnimal = (req, res) => {
+module.exports.deleteAnimal = (req, res) => {
   res.json({ message: "animal deleted" });
 };
