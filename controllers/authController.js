@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const { db } = require("../database/db");
 
 module.exports.register = (req, res) => {
@@ -47,7 +48,7 @@ module.exports.register = (req, res) => {
 };
 
 module.exports.login = (req, res) => {
-  const { email, password } = req.body;
+  const { email } = req.body;
   const q = "SELECT * FROM users WHERE `email`=?";
   db.query(q, [email], (err, data) => {
     if (err) return res.json(err);
@@ -55,11 +56,21 @@ module.exports.login = (req, res) => {
     if (data.length === 0)
       return res.status(404).json({ message: "No user found" });
 
-    const isPasswordCorrect = bcrypt.compareSync(password, data[0].password);
+    const isPasswordCorrect = bcrypt.compareSync(
+      req.body.password,
+      data[0].password
+    );
 
     if (!isPasswordCorrect)
       return res.status(400).json({ message: "Wrong login credentials" });
 
-    return res.status(200).json(data[0]);
+    const { password, ...userDetails } = data[0];
+
+    // create and assign a token
+    const token = jwt.sign(userDetails, process.env.TOKEN_SECRET);
+    res
+      .header("auth-token", token)
+      .status(200)
+      .json({ access_token: "Bearer " + token });
   });
 };
