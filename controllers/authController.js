@@ -42,7 +42,10 @@ module.exports.register = (req, res) => {
     db.query(q, [values], (err, data) => {
       if (err) return res.status(500).json(err);
 
-      return res.status(200).json(data);
+      return res.status(200).json({
+        error: null,
+        message: "User Registered Successfully",
+      });
     });
   });
 };
@@ -71,6 +74,10 @@ module.exports.login = (req, res) => {
     res
       .header("auth-token", token)
       .status(200)
-      .json({ access_token: "Bearer " + token });
+      .json({
+        error: null,
+        message: "Logged In Successfully",
+        access_token: "Bearer " + token,
+      });
   });
 };
