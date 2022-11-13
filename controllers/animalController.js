@@ -1,8 +1,9 @@
 const { db } = require("../database/db");
+const { getUserId } = require("../utils/userId");
 
 module.exports.getAllAnimals = (req, res) => {
   const q = "SELECT * FROM animals WHERE `user_id`=?";
-  db.query(q, [1], (err, data) => {
+  db.query(q, [getUserId(req)], (err, data) => {
     if (err) {
       return console.log(err);
     }
@@ -14,7 +15,7 @@ module.exports.getAnimalById = (req, res) => {
   const animalId = req.params.aid;
   const q = "SELECT * FROM animals WHERE `tag_no`=? AND `user_id`=?";
 
-  db.query(q, [animalId, 1], (err, data) => {
+  db.query(q, [animalId, getUserId(req)], (err, data) => {
     if (err) {
       return console.log(err);
     }
@@ -33,9 +34,8 @@ module.exports.createNewAnimal = (req, res) => {
     req.body.gender,
     req.body.remarks,
     req.body.photo_url,
-    1,
   ];
-  db.query(q, [values], (err, data) => {
+  db.query(q, [...values, getUserId(req)], (err, data) => {
     if (err) {
       console.log(err);
       return res.json({ error: "Something went wrong" });
@@ -58,7 +58,7 @@ module.exports.updateAnimal = (req, res) => {
     req.body.remarks,
     req.body.photo_url,
   ];
-  db.query(q, [...values, animalId, 1], (err, data) => {
+  db.query(q, [...values, animalId, getUserId(req)], (err, data) => {
     if (err) {
       return console.log(err);
     }
@@ -68,7 +68,7 @@ module.exports.updateAnimal = (req, res) => {
 
 module.exports.deleteAnimal = (req, res) => {
   const q = "DELETE FROM animals WHERE `tag_no`=? AND `user_id`=?";
-  db.query(q, [req.body.tag_no, 1], (err, data) => {
+  db.query(q, [req.body.tag_no, getUserId(req)], (err, data) => {
     if (err) {
       return console.log(err);
     }

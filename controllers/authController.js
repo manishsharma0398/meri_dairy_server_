@@ -67,17 +67,19 @@ module.exports.login = (req, res) => {
     if (!isPasswordCorrect)
       return res.status(400).json({ message: "Wrong login credentials" });
 
-    const { password, ...userDetails } = data[0];
+    const { id, password, ...userDetails } = data[0];
 
     // create and assign a token
-    const token = jwt.sign(userDetails, process.env.TOKEN_SECRET);
+    const token = jwt.sign({ id }, process.env.TOKEN_SECRET);
+
     res
-      .header("auth-token", token)
+      .cookie("auth_token", token, {
+        httpOnly: true,
+      })
       .status(200)
       .json({
         error: null,
-        message: "Logged In Successfully",
-        access_token: "Bearer " + token,
+        data: userDetails,
       });
   });
 };

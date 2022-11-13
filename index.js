@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
+const cookieParser = require("cookie-parser");
 
 const PORT = process.env.PORT || 5000;
 
@@ -8,6 +9,7 @@ const animalRoutes = require("./routes/animalRoutes");
 const authRoutes = require("./routes/authRoutes");
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/api/animals", animalRoutes);
 app.use("/api/auth", authRoutes);
