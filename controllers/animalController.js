@@ -2,7 +2,7 @@ const { db } = require("../database/db");
 const { getUserId } = require("../utils/userId");
 
 module.exports.getAllAnimals = (req, res) => {
-  const q = "SELECT * FROM animals WHERE `user_id`=?";
+  const q = "SELECT * FROM animal WHERE `user_id`=?";
   db.query(q, [getUserId(req)], (err, data) => {
     if (err) {
       return console.log(err);
@@ -13,7 +13,7 @@ module.exports.getAllAnimals = (req, res) => {
 
 module.exports.getAnimalById = (req, res) => {
   const animalId = req.params.aid;
-  const q = "SELECT * FROM animals WHERE `tag_no`=? AND `user_id`=?";
+  const q = "SELECT * FROM animal WHERE `tag_no`=? AND `user_id`=?";
 
   db.query(q, [animalId, getUserId(req)], (err, data) => {
     if (err) {
@@ -25,7 +25,7 @@ module.exports.getAnimalById = (req, res) => {
 
 module.exports.createNewAnimal = (req, res) => {
   const q =
-    "INSERT INTO animals(`tag_no`, `breed`, `animal_type`, `animal_status`, `gender`, `remarks`, `photo_url`, `user_id`) VALUES(?)";
+    "INSERT INTO animal(`tag_no`, `breed`, `animal_type`, `animal_status`, `gender`, `remarks`, `photo_url`, `user_id`) VALUES(?)";
   const values = [
     req.body.tag_no,
     req.body.breed,
@@ -48,7 +48,7 @@ module.exports.createNewAnimal = (req, res) => {
 module.exports.updateAnimal = (req, res) => {
   const animalId = req.params.aid;
   const q =
-    "UPDATE animals SET `tag_no`=?, `breed`=?, `animal_type`=?, `animal_status`=?, `gender`=?, `remarks`=?, `photo_url`=? WHERE `tag_no`=? AND `user_id`=?";
+    "UPDATE animal SET `tag_no`=?, `breed`=?, `animal_type`=?, `animal_status`=?, `gender`=?, `remarks`=?, `photo_url`=? WHERE `tag_no`=? AND `user_id`=?";
   const values = [
     req.body.tag_no,
     req.body.breed,
@@ -67,7 +67,7 @@ module.exports.updateAnimal = (req, res) => {
 };
 
 module.exports.deleteAnimal = (req, res) => {
-  const q = "DELETE FROM animals WHERE `tag_no`=? AND `user_id`=?";
+  const q = "DELETE FROM animal WHERE `tag_no`=? AND `user_id`=?";
   db.query(q, [req.body.tag_no, getUserId(req)], (err, data) => {
     if (err) {
       return console.log(err);
