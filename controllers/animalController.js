@@ -57,9 +57,7 @@ module.exports.createNewAnimal = (req, res) => {
     getUserId(req),
   ];
   db.query(q, [values], async (err, data) => {
-    console.log(err);
     if (err) return await handleServerError(res);
-    console.log(data);
 
     return res.status(201).json({ message: "Animal added successfully" });
   });
