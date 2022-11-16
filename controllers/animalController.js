@@ -37,8 +37,6 @@ module.exports.createNewAnimal = (req, res) => {
     dam_breed,
   } = req.body;
 
-  console.log(req.body);
-
   const q =
     "INSERT INTO animal(`identifier`, `breed`, `animal_type`, `animal_status`, `date`, `gender`, `remarks`, `photo_url`, `bull_name`, `bull_breed`, `dam_name`, `dam_breed`, `user_id`) VALUES(?)";
   const values = [
@@ -85,11 +83,10 @@ module.exports.updateAnimal = (req, res) => {
 };
 
 module.exports.deleteAnimal = (req, res) => {
-  const q = "DELETE FROM animal WHERE `tag_no`=? AND `user_id`=?";
-  db.query(q, [req.body.tag_no, getUserId(req)], (err, data) => {
-    if (err) {
-      return console.log(err);
-    }
-    return res.status(200).json(data);
+  const animalId = req.params.aid;
+  const q = "DELETE FROM animal WHERE `id`=? AND `user_id`=?";
+  db.query(q, [animalId, getUserId(req)], async (err, data) => {
+    if (err) return await handleServerError(req);
+    return res.status(200).json({ message: "Animal Deleted Successfully" });
   });
 };

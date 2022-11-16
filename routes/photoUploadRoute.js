@@ -17,6 +17,7 @@ router.post(
       const uploadedResponse = await cloudinary.uploader.upload(fileStr);
       return res.status(200).json({ data: uploadedResponse.url });
     } catch (error) {
+      console.log(error);
       return handleServerError(res);
     }
   }
