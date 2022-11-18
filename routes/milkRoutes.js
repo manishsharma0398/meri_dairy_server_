@@ -1,12 +1,13 @@
 const express = require("express");
-const verifyWithJwt = require("../utils/verifyToken");
 const router = express.Router();
+
+const verifyWithJwt = require("../utils/verifyToken");
 
 const milkControllers = require("../controllers/milkControllers");
 
+router.post("/add", verifyWithJwt, milkControllers.addMilkData);
 router.get("/all", verifyWithJwt, milkControllers.getAllMilkData);
 router.get("/:mid", verifyWithJwt, milkControllers.getMilkData);
-router.post("/add", verifyWithJwt, milkControllers.addMilkData);
 router.put("/:mid", verifyWithJwt, milkControllers.updateMilkData);
 router.delete("/:mid", verifyWithJwt, milkControllers.deleteMilkData);
 

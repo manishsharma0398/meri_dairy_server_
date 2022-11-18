@@ -20,7 +20,6 @@ module.exports.addHealth = (req, res) => {
 module.exports.getAllHealth = (req, res) => {
   const q = "SELECT * FROM health WHERE `user_id`=?";
   db.query(q, [getUserId(req)], (err, data) => {
-    console.log(err);
     if (err) return handleServerError(res);
 
     return res.status(200).json(data);
@@ -41,10 +40,9 @@ module.exports.updateHealth = (req, res) => {
     healthId,
     getUserId(req),
   ];
-  db.query(q, [values], (err, data) => {
-    if (err) {
-      return console.log(err);
-    }
+  db.query("", [values], (err, data) => {
+    if (err) return handleServerError(res);
+
     return console.log(data);
   });
 };

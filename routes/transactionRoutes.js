@@ -1,11 +1,12 @@
 const express = require("express");
-const verifyWithJwt = require("../utils/verifyToken");
 const router = express.Router();
+
+const verifyWithJwt = require("../utils/verifyToken");
 
 const transactionControllers = require("../controllers/transactionController");
 
-router.get("/all", verifyWithJwt, transactionControllers.getAllTransactions);
 router.post("/add", verifyWithJwt, transactionControllers.addTransaction);
+router.get("/all", verifyWithJwt, transactionControllers.getAllTransactions);
 router.put("/:tid", verifyWithJwt, transactionControllers.updateTransaction);
 router.delete("/:tid", verifyWithJwt, transactionControllers.deleteTransaction);
 

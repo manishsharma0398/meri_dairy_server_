@@ -1,9 +1,7 @@
 const express = require("express");
 const app = express();
-require("dotenv").config();
 const cookieParser = require("cookie-parser");
-
-const PORT = process.env.PORT || 5000;
+require("dotenv").config();
 
 const animalRoutes = require("./routes/animalRoutes");
 const authRoutes = require("./routes/authRoutes");
@@ -12,20 +10,22 @@ const healthRoutes = require("./routes/healthRoutes");
 const workerRoutes = require("./routes/workerRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
 const treatmentRoutes = require("./routes/treatmentRoutes");
+const matingRoutes = require("./routes/matingRoutes");
 const photoUploadRoute = require("./routes/photoUploadRoute");
 
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/file", photoUploadRoute);
 app.use("/api/animals", animalRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/milk", milkRoutes);
 app.use("/api/health", healthRoutes);
 app.use("/api/worker", workerRoutes);
 app.use("/api/transaction", transactionRoutes);
 app.use("/api/treatment", treatmentRoutes);
-app.use("/api/auth", authRoutes);
+app.use("/api/mating", matingRoutes);
+app.use("/api/file", photoUploadRoute);
 
-app.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`)
+app.listen(process.env.PORT, () =>
+  console.log(`Server running on http://localhost:${process.env.PORT}`)
 );

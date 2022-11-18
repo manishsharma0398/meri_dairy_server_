@@ -19,7 +19,6 @@ module.exports.addWorker = (req, res) => {
   ];
 
   db.query(q, [values], (err) => {
-    console.log(err);
     if (err) return handleServerError(req);
 
     return res.status(201).json({ message: "Worker added successfully" });
@@ -30,7 +29,6 @@ module.exports.getAllWorkers = (req, res) => {
   const q = "SELECT * FROM worker WHERE `user_id`=?";
   const values = [getUserId(req)];
   db.query(q, [values], (err, data) => {
-    console.log(err);
     if (err) return handleServerError(res);
 
     return res.status(200).json(data);
@@ -51,7 +49,7 @@ module.exports.updateHealth = (req, res) => {
     healthId,
     getUserId(req),
   ];
-  db.query(q, [values], (err, data) => {
+  db.query("", [values], (err, data) => {
     if (err) {
       return console.log(err);
     }

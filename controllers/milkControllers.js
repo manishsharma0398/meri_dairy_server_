@@ -4,7 +4,6 @@ const { handleServerError } = require("../utils/errorHandler");
 
 module.exports.addMilkData = (req, res) => {
   const { animal, time, date, quantity } = req.body;
-
   const q =
     "INSERT INTO milk(`a_id`, `time`, `date`, `quantity`, `u_id`) VALUES(?)";
   const values = [animal, time, date, quantity, getUserId(req)];
@@ -24,35 +23,36 @@ module.exports.getAllMilkData = (req, res) => {
 };
 
 module.exports.getMilkData = (req, res) => {
-  const { mid } = req.params;
+  const milkId = req.params.mid;
   const q = "SELECT * FROM milk WHERE `id`=? AND `u_id`=? ";
-  const values = [mid, getUserId(req)];
+  const values = [milkId, getUserId(req)];
   db.query(q, [values], async (err) => {
     if (err) return handleServerError(res, data);
-    return res.status(200).json({ data });
+    return res.status(200).json(data);
   });
 };
 
 module.exports.updateMilkData = (req, res) => {
   const { animal, time, date, quantity } = req.body;
-  const { mid } = req.params;
+  const milkId = req.params.mid;
 
   const q =
     "UPDATE milk SET `a_id`=?, `time`=?, `date`=?, `quantity`=? WHERE `id`=? AND `u_id`=? ";
-  const values = [animal, time, date, quantity, mid, getUserId(req)];
-  db.query(q, [values], async (err) => {
-    console.log(err);
+  const values = [animal, time, date, quantity, milkId, getUserId(req)];
+  db.query("", [values], async (err) => {
     if (err) return handleServerError(res);
-    return res.status(201).json({ data: "Milk Record Updated Successfully" });
+    return res
+      .status(200)
+      .json({ message: "Milk Record Updated Successfully" });
   });
 };
 
 module.exports.deleteMilkData = (req, res) => {
-  const { mid } = req.params;
+  const milkId = req.params.mid;
   const q = "DELETE FROM milk WHERE `id`=? AND `u_id`=?";
-  db.query(q, [mid, getUserId(req)], async (err) => {
+  db.query(q, [milkId, getUserId(req)], async (err) => {
     if (err) return handleServerError(res);
 
-    res.status(204).json({ data: "Milk Deleted Successfully" });
+    res.status(204).json({ message: "Milk Deleted Successfully" });
   });
 };

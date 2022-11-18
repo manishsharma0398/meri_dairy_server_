@@ -63,21 +63,43 @@ module.exports.createNewAnimal = (req, res) => {
 
 module.exports.updateAnimal = (req, res) => {
   const animalId = req.params.aid;
+  const {
+    identifier,
+    breed,
+    animal_type,
+    animal_status,
+    date,
+    gender,
+    remarks,
+    photo_url,
+    bull_name,
+    bull_breed,
+    dam_name,
+    dam_breed,
+  } = req.body;
+
   const q =
-    "UPDATE animal SET `tag_no`=?, `breed`=?, `animal_type`=?, `animal_status`=?, `gender`=?, `remarks`=?, `photo_url`=? WHERE `tag_no`=? AND `user_id`=?";
+    "UPDATE animal SET (`identifier`, `breed`, `animal_type`, `animal_status`, `date`, `gender`, `remarks`, `photo_url`, `bull_name`, `bull_breed`, `dam_name`, `dam_breed`, `user_id`)  WHERE `id`=? AND `user_id`=?";
+
   const values = [
-    req.body.tag_no,
-    req.body.breed,
-    req.body.animal_type,
-    req.body.animal_status,
-    req.body.gender,
-    req.body.remarks,
-    req.body.photo_url,
+    identifier,
+    breed,
+    animal_type,
+    animal_status,
+    date,
+    gender,
+    remarks,
+    photo_url,
+    bull_name,
+    bull_breed,
+    dam_name,
+    dam_breed,
+    animalId,
+    getUserId(req),
   ];
-  db.query(q, [...values, animalId, getUserId(req)], (err, data) => {
-    if (err) {
-      return console.log(err);
-    }
+
+  db.query("", [values], (err, data) => {
+    if (err) return handleServerError(res);
     return console.log(data);
   });
 };

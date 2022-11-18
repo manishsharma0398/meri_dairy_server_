@@ -9,7 +9,6 @@ module.exports.addTransaction = (req, res) => {
   const values = [title, remarks, amount, mode, date, type, getUserId(req)];
 
   db.query(q, [values], (err) => {
-    console.log(err);
     if (err) return handleServerError(res);
 
     return res.status(201).json({ message: "Transaction added successfully" });
@@ -20,7 +19,6 @@ module.exports.getAllTransactions = (req, res) => {
   const q = "SELECT * FROM transaction WHERE `user_id`=?";
   const values = [getUserId(req)];
   db.query(q, [values], (err, data) => {
-    console.log(err);
     if (err) return handleServerError(res);
 
     return res.status(200).json(data);
@@ -42,7 +40,7 @@ module.exports.updateTransaction = (req, res) => {
     transactionId,
     getUserId(req),
   ];
-  db.query(q, [values], (err, data) => {
+  db.query("", [values], (err, data) => {
     if (err) {
       return console.log(err);
     }

@@ -1,6 +1,8 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
 const { db } = require("../database/db");
+const { handleServerError } = require("../utils/errorHandler");
 
 module.exports.register = (req, res) => {
   const {
@@ -16,8 +18,7 @@ module.exports.register = (req, res) => {
   const q = "SELECT * FROM user WHERE `email`=? ";
 
   db.query(q, [email], (err, data) => {
-    if (err)
-      res.status(500).json({ message: "Something went wrong try again later" });
+    if (err) return handleServerError(res);
 
     if (data.length > 0)
       return res
@@ -50,19 +51,16 @@ module.exports.register = (req, res) => {
             .split("key ")[1]
             .split(".")[1]
             .split("_")[0];
-
           console.log(errorSqlField);
+
           return res
             .status(409)
             .json({ message: "Mobile Number registered with another account" });
         }
-        return res
-          .status(500)
-          .json({ message: "Something went wrong try again later" });
+        return handleServerError(res);
       }
 
-      return res.status(200).json({
-        error: null,
+      return res.status(201).json({
         message: "User Registered Successfully",
       });
     });

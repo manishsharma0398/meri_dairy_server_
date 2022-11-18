@@ -28,7 +28,6 @@ module.exports.addTreatment = (req, res) => {
   ];
 
   db.query(q, [values], (err) => {
-    console.log(err);
     if (err) return handleServerError(res);
 
     return res.status(201).json({ message: "Treatment added successfully" });
@@ -39,7 +38,6 @@ module.exports.getAllTreatment = (req, res) => {
   const q = "SELECT * FROM treatment WHERE `user_id`=?";
   const values = [getUserId(req)];
   db.query(q, [values], (err, data) => {
-    console.log(err);
     if (err) return handleServerError(res);
 
     return res.status(200).json(data);
@@ -71,7 +69,7 @@ module.exports.updateTeatment = (req, res) => {
     cost,
     getUserId(req),
   ];
-  db.query(q, [values], (err, data) => {
+  db.query("", [values], (err, data) => {
     if (err) {
       return console.log(err);
     }

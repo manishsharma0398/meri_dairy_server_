@@ -1,6 +1,7 @@
 const express = require("express");
-const verifyWithJwt = require("../utils/verifyToken");
 const router = express.Router();
+
+const verifyWithJwt = require("../utils/verifyToken");
 
 const animalControllers = require("../controllers/animalController");
 
