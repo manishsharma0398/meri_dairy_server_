@@ -79,29 +79,31 @@ module.exports.updateAnimal = (req, res) => {
   } = req.body;
 
   const q =
-    "UPDATE animal SET (`identifier`, `breed`, `animal_type`, `animal_status`, `date`, `gender`, `remarks`, `photo_url`, `bull_name`, `bull_breed`, `dam_name`, `dam_breed`, `user_id`)  WHERE `id`=? AND `user_id`=?";
+    "UPDATE animal SET `identifier`=?,`breed`=?,`animal_type`=?,`animal_status`=?,`date`=?,`gender`=?,`remarks`=?,`photo_url`=?,`bull_name`=?,`bull_breed`=?,`dam_name`=?,`dam_breed`=?  WHERE `id`=? AND `user_id`=?";
 
-  const values = [
-    identifier,
-    breed,
-    animal_type,
-    animal_status,
-    date,
-    gender,
-    remarks,
-    photo_url,
-    bull_name,
-    bull_breed,
-    dam_name,
-    dam_breed,
-    animalId,
-    getUserId(req),
-  ];
-
-  db.query("", [values], (err, data) => {
-    if (err) return handleServerError(res);
-    return console.log(data);
-  });
+  db.query(
+    q,
+    [
+      identifier,
+      breed,
+      animal_type,
+      animal_status,
+      date,
+      gender,
+      remarks,
+      photo_url,
+      bull_name,
+      bull_breed,
+      dam_name,
+      dam_breed,
+      animalId,
+      getUserId(req),
+    ],
+    (err, data) => {
+      if (err) return handleServerError(res);
+      return res.status(200).json({ message: "Sucessfully Updated" });
+    }
+  );
 };
 
 module.exports.deleteAnimal = (req, res) => {

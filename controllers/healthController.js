@@ -28,23 +28,19 @@ module.exports.getAllHealth = (req, res) => {
 
 module.exports.updateHealth = (req, res) => {
   const { animal_id, treatment_type, date, medicine } = req.body;
-
   const healthId = req.params.hid;
   const q =
-    "UPDATE health (`animal_id`, `treatment_type`, `date`, `medicine`) VALUES(?,?,?,?) WHERE `id`=?";
-  const values = [
-    animal_id,
-    treatment_type,
-    date,
-    medicine,
-    healthId,
-    getUserId(req),
-  ];
-  db.query("", [values], (err, data) => {
-    if (err) return handleServerError(res);
+    "UPDATE health SET `animal_id`=?, `treatment_type`=?, `date`=?, `medicine`=?  WHERE `id`=? AND `user_id`=?";
 
-    return console.log(data);
-  });
+  db.query(
+    q,
+    [animal_id, treatment_type, date, medicine, healthId, getUserId(req)],
+    (err, data) => {
+      if (err) return handleServerError(res);
+
+      return res.status(200).json({ message: "successfully updated" });
+    }
+  );
 };
 
 module.exports.deleteHealth = (req, res) => {

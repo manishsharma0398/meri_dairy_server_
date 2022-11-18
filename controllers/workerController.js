@@ -35,26 +35,31 @@ module.exports.getAllWorkers = (req, res) => {
   });
 };
 
-module.exports.updateHealth = (req, res) => {
-  const { animal_id, treatment_type, date, medicine } = req.body;
-
-  const healthId = req.params.hid;
+module.exports.updateWorker = (req, res) => {
+  const { name, email, address, profile_pic, date_joined, salary, remarks } =
+    req.body;
+  const workerId = req.params.wid;
   const q =
-    "UPDATE health (`animal_id`, `treatment_type`, `date`, `medicine`) VALUES(?,?,?,?) WHERE `id`=?";
-  const values = [
-    animal_id,
-    treatment_type,
-    date,
-    medicine,
-    healthId,
-    getUserId(req),
-  ];
-  db.query("", [values], (err, data) => {
-    if (err) {
-      return console.log(err);
+    "UPDATE worker SET `name`=?, `email`=?, `address`=?, `profile_pic`=?, `date_joined`=?, `salary`=?, `remarks`=? WHERE `id`=? AND `user_id`=?";
+
+  db.query(
+    q,
+    [
+      name,
+      email,
+      address,
+      profile_pic,
+      date_joined,
+      salary,
+      remarks,
+      workerId,
+      getUserId(req),
+    ],
+    (err, data) => {
+      if (err) return handleServerError(res);
+      return res.status(200).json({ message: "Updated successfully" });
     }
-    return console.log(data);
-  });
+  );
 };
 
 module.exports.deleteWorker = (req, res) => {

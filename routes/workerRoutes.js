@@ -7,7 +7,7 @@ const workerControllers = require("../controllers/workerController");
 
 router.post("/add", verifyWithJwt, workerControllers.addWorker);
 router.get("/all", verifyWithJwt, workerControllers.getAllWorkers);
-router.put("/:hid", verifyWithJwt, workerControllers.updateHealth);
+router.put("/:wid", verifyWithJwt, workerControllers.updateWorker);
 router.delete("/:wid", verifyWithJwt, workerControllers.deleteWorker);
 
 module.exports = router;

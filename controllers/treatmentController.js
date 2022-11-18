@@ -57,24 +57,26 @@ module.exports.updateTeatment = (req, res) => {
   } = req.body;
   const treatmentId = req.params.tid;
   const q =
-    "UPDATE treatment SET (`animal_id`, `date`, `vet_name`,`medicine_with_quantity`, `disease`, `disease_remarks`,`treatment_remarks`,`cost`, `user_id`) VALUES(?) WHERE `id`=? AND `user_id`=?";
-  const values = [
-    animal_id,
-    date,
-    vet_name,
-    medicine_with_quantity,
-    disease,
-    disease_remarks,
-    treatment_remarks,
-    cost,
-    getUserId(req),
-  ];
-  db.query("", [values], (err, data) => {
-    if (err) {
-      return console.log(err);
+    "UPDATE treatment SET `animal_id`=?, `date`=?, `vet_name`=?,`medicine_with_quantity`=?, `disease`=?, `disease_remarks`=?,`treatment_remarks`=?,`cost`=?  WHERE `id`=? AND `user_id`=?";
+  db.query(
+    q,
+    [
+      animal_id,
+      date,
+      vet_name,
+      medicine_with_quantity,
+      disease,
+      disease_remarks,
+      treatment_remarks,
+      cost,
+      treatmentId,
+      getUserId(req),
+    ],
+    (err, data) => {
+      if (err) return handleServerError(res);
+      return res.status(200).json({ message: "Successfully updated" });
     }
-    return console.log(data);
-  });
+  );
 };
 
 module.exports.deleteTreatment = (req, res) => {

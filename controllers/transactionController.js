@@ -29,23 +29,17 @@ module.exports.updateTransaction = (req, res) => {
   const { title, remarks, amount, mode, date, type } = req.body;
   const transactionId = req.params.tid;
   const q =
-    "UPDATE transaction(`title`, `remarks`, `amount`, `mode`, `date`, `type`) VALUES(?) WHERE `id`=? AND `user_id`=?";
-  const values = [
-    title,
-    remarks,
-    amount,
-    mode,
-    date,
-    type,
-    transactionId,
-    getUserId(req),
-  ];
-  db.query("", [values], (err, data) => {
-    if (err) {
-      return console.log(err);
+    "UPDATE transaction SET `title`=?, `remarks`=?, `amount`=?, `mode`=?, `date`=?, `type`=? WHERE `id`=? AND `user_id`=?";
+  db.query(
+    q,
+    [title, remarks, amount, mode, date, type, transactionId, getUserId(req)],
+    (err, data) => {
+      if (err) return handleServerError(res);
+      return res
+        .status(200)
+        .json({ message: "transaction updated successfully" });
     }
-    return console.log(data);
-  });
+  );
 };
 
 module.exports.deleteTransaction = (req, res) => {
