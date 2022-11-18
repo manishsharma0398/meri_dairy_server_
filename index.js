@@ -11,6 +11,7 @@ const milkRoutes = require("./routes/milkRoutes");
 const healthRoutes = require("./routes/healthRoutes");
 const workerRoutes = require("./routes/workerRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
+const treatmentRoutes = require("./routes/treatmentRoutes");
 const photoUploadRoute = require("./routes/photoUploadRoute");
 
 app.use(express.json());
@@ -22,6 +23,7 @@ app.use("/api/milk", milkRoutes);
 app.use("/api/health", healthRoutes);
 app.use("/api/worker", workerRoutes);
 app.use("/api/transaction", transactionRoutes);
+app.use("/api/treatment", treatmentRoutes);
 app.use("/api/auth", authRoutes);
 
 app.listen(PORT, () =>
