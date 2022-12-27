@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
@@ -26,6 +27,20 @@ app.use("/api/treatment", treatmentRoutes);
 app.use("/api/mating", matingRoutes);
 app.use("/api/file", photoUploadRoute);
 
-app.listen(process.env.PORT, () =>
-  console.log(`Server running on http://localhost:${process.env.PORT}`)
-);
+const db_connection_url = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.lg7dcbv.mongodb.net/test`;
+
+mongoose.set("strictQuery", "false");
+mongoose
+  .connect(db_connection_url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() =>
+    app.listen(process.env.PORT, async () =>
+      console.log(
+        "Connected to database successfully\n",
+        `Server running on http://localhost:${process.env.PORT}`
+      )
+    )
+  )
+  .catch((err) => console.log(err));
