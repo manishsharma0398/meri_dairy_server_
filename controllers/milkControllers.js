@@ -1,8 +1,23 @@
 const { db } = require("../database/db");
 const { getUserId } = require("../utils/userId");
 const { handleServerError } = require("../utils/errorHandler");
+const { milkValidator } = require("../validation/milkValidator");
 
-module.exports.addMilkData = (req, res) => {
+module.exports.addMilkData = async (req, res) => {
+  try {
+    await milkValidator.validateAsync(req.body, {
+      abortEarly: false,
+    });
+  } catch (errors) {
+    const milkErr = [];
+    errors.details.forEach((err) => {
+      const key = err.path[0] + "_error";
+      const obj = {};
+      obj[key] = err.message;
+      milkErr.push(obj);
+    });
+    return res.status(409).json(milkErr);
+  }
   const { a_id, time, date, quantity } = req.body;
   const q =
     "INSERT INTO milk(`a_id`, `time`, `date`, `quantity`, `u_id`) VALUES(?)";
@@ -32,7 +47,22 @@ module.exports.getMilkData = (req, res) => {
   });
 };
 
-module.exports.updateMilkData = (req, res) => {
+module.exports.updateMilkData = async (req, res) => {
+  try {
+    await milkValidator.validateAsync(req.body, {
+      abortEarly: false,
+    });
+  } catch (errors) {
+    const milkErr = [];
+    errors.details.forEach((err) => {
+      const key = err.path[0] + "_error";
+      const obj = {};
+      obj[key] = err.message;
+      milkErr.push(obj);
+    });
+    return res.status(409).json(milkErr);
+  }
+
   const { a_id, time, date, quantity } = req.body;
   const milkId = req.params.mid;
 

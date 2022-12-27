@@ -1,10 +1,14 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const {
+  register_validator,
+  login_validator,
+} = require("../validation/authValidator");
 const { db } = require("../database/db");
 const { handleServerError } = require("../utils/errorHandler");
 
-module.exports.register = (req, res) => {
+module.exports.register = async (req, res) => {
   const {
     phone,
     full_name,
@@ -15,15 +19,32 @@ module.exports.register = (req, res) => {
     farm_address,
   } = req.body;
 
+  try {
+    await register_validator.validateAsync(req.body, {
+      abortEarly: false,
+    });
+  } catch (errors) {
+    const authErr = [];
+    errors.details.forEach((err) => {
+      const key = err.path[0] + "_error";
+      const obj = {};
+      obj[key] = err.message;
+      authErr.push(obj);
+    });
+    return res.status(409).json(authErr);
+  }
+
   const q = "SELECT * FROM user WHERE `email`=? ";
 
   db.query(q, [email], (err, data) => {
     if (err) return handleServerError(res);
 
     if (data.length > 0)
-      return res
-        .status(409)
-        .json({ message: "Email registered with another account" });
+      return res.status(409).json([
+        {
+          email_error: "Email registered with another account",
+        },
+      ]);
 
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
@@ -53,9 +74,11 @@ module.exports.register = (req, res) => {
             .split("_")[0];
           console.log(errorSqlField);
 
-          return res
-            .status(409)
-            .json({ message: "Mobile Number registered with another account" });
+          return res.status(409).json([
+            {
+              phone_error: "Mobile Number registered with another account",
+            },
+          ]);
         }
         return handleServerError(res);
       }
@@ -67,17 +90,32 @@ module.exports.register = (req, res) => {
   });
 };
 
-module.exports.login = (req, res) => {
-  const { email } = req.body;
+module.exports.login = async (req, res) => {
+  try {
+    await login_validator.validateAsync(req.body, {
+      abortEarly: false,
+    });
+  } catch (errors) {
+    const authErr = [];
+    errors.details.forEach((err) => {
+      const key = err.path[0] + "_error";
+      const obj = {};
+      obj[key] = err.message;
+      authErr.push(obj);
+    });
+    return res.status(409).json(authErr);
+  }
+
   const q = "SELECT * FROM user WHERE `email`=?";
-  db.query(q, [email], (err, data) => {
-    if (err)
-      res.status(500).json({ message: "Something went wrong try again later" });
+  db.query(q, [req.body.email], (err, data) => {
+    if (err) return handleServerError(res);
 
     if (data.length === 0)
-      return res
-        .status(404)
-        .json({ message: "No user registered with this email" });
+      return res.status(404).json([
+        {
+          email_error: "No user registered with this email",
+        },
+      ]);
 
     const isPasswordCorrect = bcrypt.compareSync(
       req.body.password,
@@ -85,21 +123,22 @@ module.exports.login = (req, res) => {
     );
 
     if (!isPasswordCorrect)
-      return res
-        .status(400)
-        .json({ message: "Email and Password doesn't match" });
+      return res.status(400).json([
+        {
+          password_error: "Password Incorrect",
+        },
+      ]);
 
     const { id, password, ...userDetails } = data[0];
 
     const token = jwt.sign({ id }, process.env.TOKEN_SECRET);
 
-    res
+    return res
       .cookie("auth_token", token, {
         httpOnly: true,
       })
       .status(200)
       .json({
-        error: null,
         data: userDetails,
       });
   });

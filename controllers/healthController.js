@@ -1,8 +1,24 @@
 const { db } = require("../database/db");
 const { getUserId } = require("../utils/userId");
 const { handleServerError } = require("../utils/errorHandler");
+const { healthValidator } = require("../validation/healthValidator");
 
-module.exports.addHealth = (req, res) => {
+module.exports.addHealth = async (req, res) => {
+  try {
+    await healthValidator.validateAsync(req.body, {
+      abortEarly: false,
+    });
+  } catch (errors) {
+    const healthErr = [];
+    errors.details.forEach((err) => {
+      const key = err.path[0] + "_error";
+      const obj = {};
+      obj[key] = err.message;
+      healthErr.push(obj);
+    });
+    return res.status(409).json(healthErr);
+  }
+
   const { animal_id, treatment_type, medicine, date } = req.body;
   const q =
     "INSERT INTO health(`animal_id`, `treatment_type`, `medicine`, `date`, `user_id`) VALUES(?)";
@@ -26,7 +42,22 @@ module.exports.getAllHealth = (req, res) => {
   });
 };
 
-module.exports.updateHealth = (req, res) => {
+module.exports.updateHealth = async (req, res) => {
+  try {
+    await healthValidator.validateAsync(req.body, {
+      abortEarly: false,
+    });
+  } catch (errors) {
+    const milkErr = [];
+    errors.details.forEach((err) => {
+      const key = err.path[0] + "_error";
+      const obj = {};
+      obj[key] = err.message;
+      milkErr.push(obj);
+    });
+    return res.status(409).json(milkErr);
+  }
+
   const { animal_id, treatment_type, date, medicine } = req.body;
   const healthId = req.params.hid;
   const q =

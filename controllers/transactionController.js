@@ -1,8 +1,24 @@
 const { db } = require("../database/db");
 const { getUserId } = require("../utils/userId");
 const { handleServerError } = require("../utils/errorHandler");
+const { transactionValidator } = require("../validation/transactionValidator");
 
-module.exports.addTransaction = (req, res) => {
+module.exports.addTransaction = async (req, res) => {
+  try {
+    await transactionValidator.validateAsync(req.body, {
+      abortEarly: false,
+    });
+  } catch (errors) {
+    const transErr = [];
+    errors.details.forEach((err) => {
+      const key = err.path[0] + "_error";
+      const obj = {};
+      obj[key] = err.message;
+      transErr.push(obj);
+    });
+    return res.status(409).json(transErr);
+  }
+
   const { title, remarks, amount, mode, date, type } = req.body;
   const q =
     "INSERT INTO transaction(`title`, `remarks`, `amount`, `mode`, `date`, `type`, `user_id`) VALUES(?)";
@@ -25,7 +41,22 @@ module.exports.getAllTransactions = (req, res) => {
   });
 };
 
-module.exports.updateTransaction = (req, res) => {
+module.exports.updateTransaction = async (req, res) => {
+  try {
+    await transactionValidator.validateAsync(req.body, {
+      abortEarly: false,
+    });
+  } catch (errors) {
+    const transErr = [];
+    errors.details.forEach((err) => {
+      const key = err.path[0] + "_error";
+      const obj = {};
+      obj[key] = err.message;
+      transErr.push(obj);
+    });
+    return res.status(409).json(transErr);
+  }
+
   const { title, remarks, amount, mode, date, type } = req.body;
   const transactionId = req.params.tid;
   const q =
