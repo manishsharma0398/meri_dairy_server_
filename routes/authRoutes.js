@@ -1,12 +1,12 @@
-const express = require("express");
+import express from "express";
+
+import { login, logout, registerUser } from "../controllers/authController.js";
+
 const router = express.Router();
 
-const verifyWithJwt = require("../utils/verifyToken");
+// router.post("/register", authController.register);
+router.post("/register", registerUser);
+router.post("/login", login);
+router.post("/logout", logout);
 
-const authController = require("../controllers/authController");
-
-router.post("/register", authController.register);
-router.post("/login", authController.login);
-router.post("/logout", verifyWithJwt, authController.logout);
-
-module.exports = router;
+export default router;
