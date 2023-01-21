@@ -1,0 +1,2 @@
+20230121	23:26:44	ac8bcb43-d649-43de-bd9a-81392e83ed1a	Too many Requests: Too many login requests from this IP, please try again after 60 seconds	POST	/login	undefined
+20230121	23:46:00	8ebe36d8-2a77-4463-8a64-0f41a8dd2e9e	Error: Not allowed by CORS	GET	/	https://www.youtube.com
