@@ -1,8 +1,15 @@
-import mysql from "mysql2";
+import mongoose from "mongoose";
 
-export default mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
+const connectToDB = async () => {
+  try {
+    mongoose.set("strictQuery", "false");
+    mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export default connectToDB;
